@@ -99,11 +99,105 @@
     </main>
   </div>
 
-  <dialog id="word-dialog" class="modal"><form id="word-form" method="dialog"><div class="modal-head"><div><div class="eyebrow">VOCABULARY ENTRY</div><h2 id="word-dialog-title">Add a word</h2></div><button type="button" class="icon-button" data-close="word-dialog" aria-label="Close">×</button></div><input type="hidden" id="word-id"><label class="input-label" for="word-text">Word or phrase <span>*</span></label><input id="word-text" required maxlength="300" placeholder="e.g. meticulous"><label class="input-label" for="word-definition">Definition / meaning <span>*</span></label><textarea id="word-definition" required rows="3" maxlength="3000" placeholder="e.g. very careful and precise"></textarea><label class="input-label" for="word-translation">Translation (optional)</label><input id="word-translation" maxlength="1000" placeholder="e.g. 一丝不苟的"><label class="input-label" for="word-example">Example sentence (optional)</label><textarea id="word-example" rows="2" maxlength="2000" placeholder="Write an example in context…"></textarea><div class="form-two"><div><label class="input-label" for="word-tags">Tags (comma-separated)</label><input id="word-tags" placeholder="academic, C1"></div><div><label class="input-label" for="word-notes">Notes (optional)</label><input id="word-notes" maxlength="1000" placeholder="Part of speech, usage…"></div></div><div class="modal-actions"><button type="button" class="button button-secondary" data-close="word-dialog">Cancel</button><button type="submit" class="button button-primary">Save word</button></div></form></dialog>
-
-  <dialog id="bulk-dialog" class="modal modal-wide"><form id="bulk-form" method="dialog"><div class="modal-head"><div><div class="eyebrow">BATCH ENTRY</div><h2>Bulk add words</h2><p>One entry per line. Use <code>word | definition | translation</code>.</p></div><button type="button" class="icon-button" data-close="bulk-dialog" aria-label="Close">×</button></div><textarea id="bulk-text" rows="10" placeholder="abundant | more than enough | 丰富的&#10;reluctant | unwilling or hesitant | 不情愿的&#10;meticulous | very careful and precise | 一丝不苟的"></textarea><div class="bulk-help"><span>Blank lines are ignored. Existing words are not overwritten.</span><span id="bulk-preview">0 entries detected</span></div><div class="modal-actions"><button type="button" class="button button-secondary" data-close="bulk-dialog">Cancel</button><button type="submit" class="button button-primary">Import entries</button></div></form></dialog>
-
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+<dialog id="word-dialog" class="modal">
+    <form id="word-form" method="dialog">
+      <div class="modal-head">
+        <div>
+          <div class="eyebrow">VOCABULARY ENTRY</div>
+          <h2 id="word-dialog-title">Add a word</h2>
+        </div>
+        <button type="button" class="icon-button" data-close="word-dialog" aria-label="Close">×</button>
+      </div>
+  
+      <input type="hidden" id="word-id">
+  
+      <label class="input-label" for="word-text">
+        Word or phrase <span>*</span>
+      </label>
+      <input
+        id="word-text"
+        required
+        maxlength="300"
+        placeholder="e.g. éxito"
+      >
+  
+      <label class="input-label" for="word-definition">
+        Meaning / translation <span>*</span>
+      </label>
+      <textarea
+        id="word-definition"
+        required
+        rows="3"
+        maxlength="3000"
+        placeholder="e.g. success"
+      ></textarea>
+  
+      <label class="input-label" for="word-meaning-language">
+        Meaning language <span>*</span>
+      </label>
+      <select id="word-meaning-language" required>
+        <option value="zh">Chinese (中文)</option>
+        <option value="en">English</option>
+        <option value="fr">French (Français)</option>
+        <option value="es">Spanish (Español)</option>
+        <option value="ja">Japanese (日本語)</option>
+        <option value="ko">Korean (한국어)</option>
+        <option value="de">German (Deutsch)</option>
+        <option value="ru">Russian (Русский)</option>
+        <option value="ar">Arabic (العربية)</option>
+        <option value="pt">Portuguese (Português)</option>
+        <option value="other">Other</option>
+      </select>
+  
+      <label class="input-label" for="word-translation">
+        Alternative translation (optional)
+      </label>
+      <input
+        id="word-translation"
+        maxlength="1000"
+        placeholder="e.g. the achievement of desired goals"
+      >
+  
+      <label class="input-label" for="word-example">
+        Example sentence (optional)
+      </label>
+      <textarea
+        id="word-example"
+        rows="2"
+        maxlength="2000"
+        placeholder="Write an example in context…"
+      ></textarea>
+  
+      <div class="form-two">
+        <div>
+          <label class="input-label" for="word-tags">
+            Tags (comma-separated)
+          </label>
+          <input id="word-tags" placeholder="academic, C1">
+        </div>
+        <div>
+          <label class="input-label" for="word-notes">
+            Notes (optional)
+          </label>
+          <input
+            id="word-notes"
+            maxlength="1000"
+            placeholder="Part of speech, usage…"
+          >
+        </div>
+      </div>
+  
+      <div class="modal-actions">
+        <button
+          type="button"
+          class="button button-secondary"
+          data-close="word-dialog"
+        >Cancel</button>
+        <button type="submit" class="button button-primary">Save word</button>
+      </div>
+    </form>
+  </dialog>
+  
   <script src="app.js"></script>
 </body>
 </html>
