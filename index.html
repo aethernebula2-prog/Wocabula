@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f7f4">
+  <title>LexiLab — Vocabulary Studio</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#" aria-label="LexiLab home">
+        <span class="brand-mark">L</span>
+        <span><strong>LexiLab</strong><small>VOCABULARY STUDIO</small></span>
+      </a>
+      <div class="sidebar-label">WORKSPACE</div>
+      <nav id="main-nav" aria-label="Main navigation">
+        <button class="nav-item active" data-view="library"><span>▤</span> Vocabulary library</button>
+        <button class="nav-item" data-view="flashcards"><span>▱</span> Flashcards</button>
+        <button class="nav-item" data-view="spelling"><span>⌨</span> Spelling practice</button>
+        <button class="nav-item" data-view="quiz"><span>☷</span> Multiple choice</button>
+        <button class="nav-item" data-view="review"><span>↻</span> Review mistakes <span class="nav-count" id="mistake-count">0</span></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="storage-card">
+          <span class="eyebrow">YOUR WORDS</span>
+          <strong id="sidebar-total">0</strong>
+          <span>words saved locally</span>
+        </div>
+        <p class="privacy-note">Your vocabulary stays in this browser. Export a backup to keep it safe.</p>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <div class="mobile-brand"><span class="brand-mark">L</span><strong>LexiLab</strong></div>
+        <div class="breadcrumb"><span>Workspace</span><span class="crumb-slash">/</span><strong id="page-breadcrumb">Vocabulary library</strong></div>
+        <div class="top-actions">
+          <button class="button button-quiet" id="export-btn">Export backup</button>
+          <label class="button button-quiet file-button">Import backup<input type="file" id="json-import" accept=".json,application/json" hidden></label>
+        </div>
+      </header>
+
+      <section class="view active" id="view-library">
+        <div class="page-heading">
+          <div><div class="eyebrow">YOUR PERSONAL WORD BANK</div><h1>Vocabulary library</h1><p>Collect words, keep useful context, and study on your own terms.</p></div>
+          <button class="button button-primary" id="add-word-btn">＋ Add a word</button>
+        </div>
+        <div class="stats-grid">
+          <article class="stat-card"><span>Total words</span><strong id="stat-total">0</strong><small>In your library</small></article>
+          <article class="stat-card"><span>Marked familiar</span><strong id="stat-known">0</strong><small>Words you know</small></article>
+          <article class="stat-card"><span>Needs review</span><strong id="stat-review">0</strong><small>Marked for another look</small></article>
+          <article class="stat-card"><span>Spelling accuracy</span><strong id="stat-accuracy">—</strong><small id="stat-attempts">No attempts yet</small></article>
+        </div>
+        <div class="content-card">
+          <div class="section-head"><div><h2>All words</h2><p id="word-subtitle">Your collection, in one place.</p></div><button class="button button-secondary" id="bulk-btn">＋ Bulk add</button></div>
+          <div class="toolbar">
+            <label class="search-box"><span>⌕</span><input id="search-input" type="search" placeholder="Search words, meanings, notes…"></label>
+            <select id="filter-select" aria-label="Filter words"><option value="all">All words</option><option value="review">Needs review</option><option value="known">Marked familiar</option></select>
+            <label class="button button-secondary file-button import-csv">Import CSV / TSV<input type="file" id="csv-import" accept=".csv,.tsv,.txt,text/csv,text/plain" hidden></label>
+          </div>
+          <div class="table-wrap"><table><thead><tr><th>WORD</th><th>DEFINITION</th><th>STATUS</th><th>ADDED</th><th></th></tr></thead><tbody id="word-table-body"></tbody></table></div>
+          <div class="empty-state" id="empty-state"><div class="empty-icon">▤</div><h3>Your word bank starts here</h3><p>Add a word, paste a list, or import a CSV / TSV file.</p><button class="button button-primary" id="empty-add-btn">Add your first word</button></div>
+          <div class="table-footer"><span id="table-count">0 words</span><span>Saved automatically in this browser</span></div>
+        </div>
+      </section>
+
+      <section class="view" id="view-flashcards">
+        <div class="page-heading"><div><div class="eyebrow">ACTIVE RECALL</div><h1>Flashcards</h1><p>Try to recall the meaning before revealing the answer.</p></div><div class="inline-controls"><select id="flash-direction" aria-label="Flashcard direction"><option value="word">Word → definition</option><option value="definition">Definition → word</option></select><button class="button button-secondary" id="shuffle-flash">Shuffle</button></div></div>
+        <div class="study-layout"><div class="study-main">
+          <div class="study-progress"><span id="flash-progress">Ready when you are</span><span id="flash-counter">0 / 0</span></div>
+          <button class="flashcard" id="flashcard" aria-label="Reveal flashcard answer"><span class="card-label" id="flash-label">WORD</span><strong id="flash-prompt">Add words to begin</strong><span class="card-hint" id="flash-hint">Click to reveal the answer</span><div class="card-divider"></div><span class="card-label">ANSWER</span><strong id="flash-answer" class="answer-hidden">Your answer appears here</strong><span class="card-hint" id="flash-answer-note">No timer. Take your time.</span></button>
+          <div class="study-actions"><button class="button button-secondary" id="flash-prev">← Previous</button><button class="button button-secondary" id="flash-reveal">Reveal answer</button><button class="button button-primary" id="flash-next">Next word →</button></div>
+          <div class="self-rating"><span>How well did you know it?</span><button data-rating="again" class="rating-button">Need review</button><button data-rating="known" class="rating-button">I knew it</button></div>
+        </div><aside class="study-aside"><h3>Study notes</h3><p>Flashcards are for retrieval practice, not speed. Reveal the answer when you're ready.</p><div class="aside-rule"></div><div class="mini-stat"><span>In this session</span><strong id="flash-session-count">0</strong></div><div class="mini-stat"><span>Marked familiar</span><strong id="flash-session-known">0</strong></div><button class="text-button" id="flash-reset">Restart this set ↺</button></aside></div>
+      </section>
+
+      <section class="view" id="view-spelling">
+        <div class="page-heading"><div><div class="eyebrow">ACTIVE RECALL</div><h1>Spelling practice</h1><p>Read the definition, then type the word from memory.</p></div><div class="inline-controls"><label class="toggle-label"><input type="checkbox" id="strict-case"> Case-sensitive</label><button class="button button-secondary" id="spelling-restart">Restart practice</button></div></div>
+        <div class="practice-card">
+          <div class="practice-top"><span class="pill">SPELLING</span><span id="spell-counter">Question 0 of 0</span></div>
+          <div class="practice-body"><div class="eyebrow">DEFINITION</div><h2 id="spell-definition">Add words with definitions to start practicing.</h2><p class="practice-note" id="spell-note"></p>
+            <form id="spelling-form"><label class="input-label" for="spell-input">Your spelling</label><input id="spell-input" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type the word…" disabled><div class="feedback" id="spell-feedback" aria-live="polite"></div><div class="practice-actions"><button class="button button-secondary" type="button" id="spell-skip">Skip</button><button class="button button-primary" id="spell-submit" type="submit" disabled>Check spelling</button><button class="button button-primary hidden" id="spell-next" type="button">Next word →</button></div></form>
+          </div><div class="practice-bottom"><span id="spell-session">No answers submitted yet</span><span>Spelling is checked locally.</span></div>
+        </div>
+        <div class="tip-card"><span class="tip-icon">i</span><p><strong>Spelling rules:</strong> Matching ignores leading/trailing spaces and is case-insensitive by default. Diacritics and punctuation are preserved, so the word itself still needs to be spelled correctly.</p></div>
+      </section>
+
+      <section class="view" id="view-quiz">
+        <div class="page-heading"><div><div class="eyebrow">RECOGNITION PRACTICE</div><h1>Multiple choice</h1><p>Choose the definition that matches the word.</p></div><button class="button button-secondary" id="quiz-restart">New set</button></div>
+        <div class="quiz-card"><div class="practice-top"><span class="pill">MULTIPLE CHOICE</span><span id="quiz-counter">Question 0 of 0</span></div><div class="quiz-body"><div class="eyebrow">WORD</div><h2 id="quiz-word">Add words with definitions to begin.</h2><div id="quiz-options" class="quiz-options"></div><div class="feedback" id="quiz-feedback" aria-live="polite"></div><button class="button button-primary hidden" id="quiz-next">Next question →</button></div><div class="practice-bottom"><span id="quiz-session">Choose an answer to begin.</span><span>No countdown or score pressure.</span></div></div>
+      </section>
+
+      <section class="view" id="view-review">
+        <div class="page-heading"><div><div class="eyebrow">PERSONAL REVIEW LIST</div><h1>Review mistakes</h1><p>Words you marked for review or spelled incorrectly.</p></div><button class="button button-primary" id="review-spell-btn">Practice these words</button></div>
+        <div class="content-card"><div class="section-head"><div><h2>Words to revisit</h2><p>Remove a word from this list by marking it familiar in the library.</p></div></div><div class="table-wrap"><table><thead><tr><th>WORD</th><th>DEFINITION</th><th>REASON</th><th></th></tr></thead><tbody id="review-table-body"></tbody></table></div><div class="empty-state" id="review-empty"><div class="empty-icon">✓</div><h3>Nothing to review</h3><p>Words you mark for review or miss in spelling will appear here.</p></div></div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="word-dialog" class="modal"><form id="word-form" method="dialog"><div class="modal-head"><div><div class="eyebrow">VOCABULARY ENTRY</div><h2 id="word-dialog-title">Add a word</h2></div><button type="button" class="icon-button" data-close="word-dialog" aria-label="Close">×</button></div><input type="hidden" id="word-id"><label class="input-label" for="word-text">Word or phrase <span>*</span></label><input id="word-text" required maxlength="300" placeholder="e.g. meticulous"><label class="input-label" for="word-definition">Definition / meaning <span>*</span></label><textarea id="word-definition" required rows="3" maxlength="3000" placeholder="e.g. very careful and precise"></textarea><label class="input-label" for="word-translation">Translation (optional)</label><input id="word-translation" maxlength="1000" placeholder="e.g. 一丝不苟的"><label class="input-label" for="word-example">Example sentence (optional)</label><textarea id="word-example" rows="2" maxlength="2000" placeholder="Write an example in context…"></textarea><div class="form-two"><div><label class="input-label" for="word-tags">Tags (comma-separated)</label><input id="word-tags" placeholder="academic, C1"></div><div><label class="input-label" for="word-notes">Notes (optional)</label><input id="word-notes" maxlength="1000" placeholder="Part of speech, usage…"></div></div><div class="modal-actions"><button type="button" class="button button-secondary" data-close="word-dialog">Cancel</button><button type="submit" class="button button-primary">Save word</button></div></form></dialog>
+
+  <dialog id="bulk-dialog" class="modal modal-wide"><form id="bulk-form" method="dialog"><div class="modal-head"><div><div class="eyebrow">BATCH ENTRY</div><h2>Bulk add words</h2><p>One entry per line. Use <code>word | definition | translation</code>.</p></div><button type="button" class="icon-button" data-close="bulk-dialog" aria-label="Close">×</button></div><textarea id="bulk-text" rows="10" placeholder="abundant | more than enough | 丰富的&#10;reluctant | unwilling or hesitant | 不情愿的&#10;meticulous | very careful and precise | 一丝不苟的"></textarea><div class="bulk-help"><span>Blank lines are ignored. Existing words are not overwritten.</span><span id="bulk-preview">0 entries detected</span></div><div class="modal-actions"><button type="button" class="button button-secondary" data-close="bulk-dialog">Cancel</button><button type="submit" class="button button-primary">Import entries</button></div></form></dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
