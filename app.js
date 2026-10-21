@@ -17,7 +17,11 @@
   const shuffle = arr => { const copy = [...arr]; for(let i=copy.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]];} return copy; };
   const clean = value => String(value ?? "").trim();
   const normalize = value => clean(value).normalize("NFC");
-  const meaning = word => word.definition || word.translation || "No definition added";
+  const meaning = word =>
+    word.meaning ||
+    word.translation ||
+    word.definition ||
+    "No meaning added";
   const reviewed = word => (word.status === "review" || (word.spellingMistakes || 0) > 0);
   function showToast(message, error=false) {
     const el=$("toast"); el.textContent=message; el.classList.toggle("error",error); el.classList.add("show");
@@ -50,12 +54,25 @@
     const query=clean($("search-input").value).toLocaleLowerCase();
     const filter=$("filter-select").value;
     const filtered=words.filter(w=>{
-      const text=[w.word,w.definition,w.translation,w.notes,(w.tags||[]).join(" "),w.example].join(" ").toLocaleLowerCase();
+      const text = [
+        w.word,
+        w.meaning,
+        w.definition,
+        w.translation,
+        w.notes,
+        (w.tags || []).join(" "),
+        w.example
+      ].join(" ").toLocaleLowerCase();
       return (!query||text.includes(query))&&(filter==="all"||(filter==="review"?reviewed(w):w.status==="known"));
     });
     $("word-table-body").innerHTML=filtered.map(w=>`<tr>
-      <td><div class="word-main">${escapeHtml(w.word)}</div>${w.translation?`<div class="word-sub">${escapeHtml(w.translation)}</div>`:""}</td>
-      <td><div class="definition-cell">${escapeHtml(w.definition||"—")}</div>${w.example?`<div class="word-sub">${escapeHtml(w.example)}</div>`:""}</td>
+      <td>
+        <div class="word-main">${escapeHtml(w.word)}</div>
+      </td>
+      <td>
+        <div class="definition-cell">${escapeHtml(meaning(w))}</div>
+        ${w.example ? `<div class="word-sub">${escapeHtml(w.example)}</div>` : ""}
+      </td>
       <td><span class="status-pill ${w.status==="known"?"known":reviewed(w)?"review":""}">${w.status==="known"?"Familiar":reviewed(w)?"Needs review":"Learning"}</span></td>
       <td>${escapeHtml(w.createdAt?new Date(w.createdAt).toLocaleDateString():"—")}</td>
       <td><div class="row-actions"><button class="small-action" data-edit="${escapeHtml(w.id)}" aria-label="Edit ${escapeHtml(w.word)}">Edit</button><button class="small-action" data-delete="${escapeHtml(w.id)}" aria-label="Delete ${escapeHtml(w.word)}">×</button></div></td>
@@ -92,7 +109,29 @@
   async function submitWord(event){
     event.preventDefault();
     const id=$("word-id").value||makeId(), old=words.find(w=>w.id===id);
-    const word={...(old||{}),id,word:normalize($("word-text").value),definition:clean($("word-definition").value),translation:clean($("word-translation").value),example:clean($("word-example").value),tags:clean($("word-tags").value).split(",").map(clean).filter(Boolean),notes:clean($("word-notes").value),status:old?.status||"learning",createdAt:old?.createdAt||now(),updatedAt:now(),spellingAttempts:old?.spellingAttempts||0,spellingCorrect:old?.spellingCorrect||0,spellingMistakes:old?.spellingMistakes||0};
+    const translation = clean($("word-translation").value);
+const definition = clean($("word-definition").value);
+
+const word = {
+  ...(old || {}),
+  id,
+  word: normalize($("word-text").value),
+  meaning: translation || definition,
+  translation,
+  definition,
+  example: clean($("word-example").value),
+  tags: clean($("word-tags").value)
+    .split(",")
+    .map(clean)
+    .filter(Boolean),
+  notes: clean($("word-notes").value),
+  status: old?.status || "learning",
+  createdAt: old?.createdAt || now(),
+  updatedAt: now(),
+  spellingAttempts: old?.spellingAttempts || 0,
+  spellingCorrect: old?.spellingCorrect || 0,
+  spellingMistakes: old?.spellingMistakes || 0
+};
     await putWord(word);$("word-dialog").close();await reloadWords();showToast(old?"Word updated.":"Word saved automatically.");
   }
   function parseBulkLine(line){
